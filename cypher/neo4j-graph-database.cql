@@ -39,19 +39,20 @@ RETURN n
 LIMIT 25
 
 // Create relationships
-MATCH (d:Dataset)
-MATCH (c:Category)
+MATCH (d:Dataset), (c:Category)
 WHERE d.categoryName = c.categoryName
 CREATE (c)-[:ORGANIZES]->(d);
 
 // Review relationships
-MATCH (c:Category)-[r:ORGANIZES]-(d:Dataset) RETURN c, Type(r), d;
+MATCH (c:Category)-[r:ORGANIZES]-(d:Dataset)
+RETURN c, Type(r), d;
 
 // Review relationships
-MATCH (c:Category)-[r:ORGANIZES]->(d:Dataset) RETURN c.categoryName, Type(r), Count(d) as datasets ORDER BY datasets DESC;
+MATCH (c:Category)-[r:ORGANIZES]->(d:Dataset)
+RETURN c.categoryName, Type(r), Count(d) as datasets
+ORDER BY datasets DESC;
 
-MATCH (ds:Datasource)
-MATCH (c:Category)
+MATCH (ds:Datasource), (c:Category)
 WHERE ds.categoryName = c.categoryName
 CREATE (c)-[:ORGANIZES]->(ds);
 
@@ -100,8 +101,8 @@ CREATE (ds:Datasource:DataRepo:Tool
 CREATE (c:Category {categoryName: 'Mixed'});
 
 // Relate Mixed and GitHub
-MATCH (c:Category {categoryName: 'Mixed'})
-MATCH (ds:DataRepo)
+MATCH (c:Category {categoryName: 'Mixed'}),
+(ds:DataRepo)
 CREATE (c)-[:ORGANIZES]->(ds);
 
 // Check matching cloud property existance
@@ -109,8 +110,7 @@ MATCH (d:Dataset) WHERE EXISTS (d.cloud)
 RETURN d.datasetName, d.cloud;
 
 // Create Cloud datasets relationships
-MATCH (d:Dataset)
-MATCH (ds:Datasource)
+MATCH (d:Dataset), (ds:Datasource)
 WHERE ds.datasourceName=d.cloud
 CREATE (ds)-[:STORES]->(d);
 
@@ -128,14 +128,13 @@ CREATE (ds:Datasource:DataList:Tool
   link: 'https://github.com/caesar0301/awesome-public-datasets'});
 
 // Related datasets to Awesome list
-MATCH (d:Dataset)
-MATCH (ds:Datasource)
+MATCH (d:Dataset), (ds:Datasource)
 WHERE ds.datasourceName='Awesome Datasets'
 CREATE (ds)-[:LISTS]->(d);
 
 // Relate categories
-MATCH (ml:Category {categoryName: 'Machine Learning'})
-MATCH (nlp:Category {categoryName: 'Natural Language'})
+MATCH (ml:Category {categoryName: 'Machine Learning'}),
+(nlp:Category {categoryName: 'Natural Language'})
 CREATE (nlp)-[:SUBSET_OF]->(ml);
 
 // -------- REFERENCE ONLY ------------
